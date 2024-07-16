@@ -29,12 +29,6 @@ app = Flask('blog')
 
 tc = ToyInfra('blog', user=getenv('MONGO_USER'), passwd=getenv('MONGO_PASSWORD'))
 
-if not getenv('LOCAL'):
-    tc.discover.set_params('toyblog', 'Little Blog', 'An archive of old and a storage for new', tags=['Personal', 'Article'])
-    tc.discover.start_reporting()
-
-
-
 
 blog_config = tc.get_own_config()
 
