@@ -15,4 +15,4 @@ RUN pip install -r requirements.txt
 # Bundle app source
 COPY blog blog_web crawler toycommons ./
 
-CMD ["gunicorn", "-w",  "4", "-b", "0.0.0.0:80", "toychest:app"]
+CMD ["gunicorn", "-w",  "4", "-b", "0.0.0.0:80", "main:app"]
