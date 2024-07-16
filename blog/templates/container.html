@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WillDrug Web Log</title>
+    <link href="/templates/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css" integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK" crossorigin="anonymous">
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="py-4 header bg-gray-900 text-white">
+        <style>
+            /* Custom styles for the dropdown */
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                right: 0;
+                background-color: #1a202c;
+                z-index: 1000;
+                width: 200px; /* Adjust width as needed */
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            }
+            .dropdown-content a {
+                display: block;
+                padding: 0.5rem 1rem;
+                color: #cbd5e0;
+                text-decoration: none;
+                transition: background-color 0.2s ease;
+            }
+            .dropdown-content a:hover {
+                background-color: #2d3748;
+            }
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+
+            .tooltip {
+                position: relative;
+                display: inline-block;
+            }
+
+            .tooltip-text {
+                visibility: hidden;
+                width: 120px;
+                background-color: black;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px 0;
+
+                /* Position the tooltip text */
+                position: absolute;
+                z-index: 1;
+                bottom: 125%; /* Position above the element */
+                left: 50%;
+                margin-left: -60px;
+
+                /* Fade in tooltip */
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .tooltip:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
+        </style>
+        <div class="max-w-7xl mx-auto px-4 flex justify-between">
+            <!-- Blog Name -->
+            <div class="max-w-7xl px-4">
+                <h1 class="text-4xl"><a href="/">WillDrug Web Log</a></h1>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div class="relative dropdown"  style="margin-top: 7px">
+                <div class="dropdown">
+                    <button class="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150 ease-in-out">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
+                        </svg>
+                    </button>
+                    <div class="dropdown-content m-1 py-1">
+                        <a href="/calendar" class="block rounded-md">Calendar</a>
+                        <a href="/tags" class="block rounded-md">All Tags</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container flex flex-1 flex-col lg:flex-row mt-6 mx-auto">
+        <!-- Main Content -->
+        <main class="relative w-full bg-white shadow p-6 mx-auto px-4 py-4">
+            {% block main %}
+                <link href="output.css" rel="stylesheet">
+                <section class="mt-10"> <!-- page ref -->
+                    <!-- this block is element reference only -->
+                    <header class="mb-6">
+                        <h2 class="text-3xl font-bold mb-2">Page Title</h2>
+                        <p class="text-sm text-gray-500">Posted on July 13, 2024</p>
+                    </header>
+                    <!-- content -->
+                    <p class="mb-4">This is a paragraph: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <blockquote class="pl-4 border-l-4 border-gray-500 italic">
+                        This is a blockquote: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                    </blockquote>
+                    <footer class="text-sm text-gray-600">
+                        <div class="absolute bottom-0 right-0 mb-4 mr-4">
+                            <p>Tags: <a href="#" class="text-blue-500 hover:underline">blog</a>, <a href="#" class="text-blue-500 hover:underline">post</a></p>
+                        </div>
+                    </footer>
+                    <p class="italic">Test italic.</p>
+                    <p class="font-bold">Test bold</p>
+                    <p class="m-auto line-through">Linethrough</p>
+                    <p class="underline">Underline</p>
+                    <p class="text-left">Text Left</p>
+                    <p class="text-right" style="text-align: right;">Text Right</p>
+                    <p class="text-center">Text center</p>
+                    <div class="justify-start flex">Aligned left <span>Hello</span><span>Cruel</span><span>World</span></div>
+                    <div class="justify-end flex">Aligned right <span>Hello</span><span>Cruel</span><span>World</span></div>
+                    <div class="justify-center flex">Centered <span>Hello</span><span>Cruel</span><span>World</span></div>
+                    <p style="font-family: monospace;">MONOSPAAAAAAAAAAAAAAAAAAAAAACE</p>
+                    <div style="margin-left: 30px;">Indented, lol</div>
+                    <div class="flex flex-row"><p>This</p><p>Is</p><p>A</p><p>Row</p></div>
+                    <p class="text-sm" style="font-size: small;">SMol</p>
+                    <p class="text-base">Reg</p>
+                    <p class="text-lg">Bigg</p>
+                    <p class="text-gray-500">Muted text</p>
+                    <a class="tooltip">HELLOOOO
+                    <span class="tooltip-text bg-gray-700 text-white text-sm rounded p-2">
+                        fdfdThis is the tooltip text 22
+                    </span></a>
+                </section>
+                <section>
+                    <!-- search ref -->
+                    <!-- Results Section -->
+                    <div class="mt-6">
+                        <ul>
+                            <!-- Replace with your actual search results -->
+                            <li class="border-b border-gray-200 py-4">
+                                <a href="#" class="block hover:bg-gray-50 focus:bg-gray-50 transition duration-150 ease-in-out">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <h3 class="text-lg font-medium text-gray-900">Title of the Result</h3>
+                                            <p class="text-sm text-gray-600 mt-1">Source: Source Name</p>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <p class="text-sm text-gray-600 mr-2">Created At: <span class="font-medium">2023-07-12</span></p>
+                                            <div class="flex flex-wrap gap-1">
+                                                <!-- Replace with your actual tags -->
+                                                <span class="bg-gray-200 text-gray-800 text-xs px-2 rounded-full">Tag1</span>
+                                                <span class="bg-gray-200 text-gray-800 text-xs px-2 rounded-full">Tag2</span>
+                                                <!-- Add more tags as needed -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="border-b border-gray-200 py-4">
+                                <a href="#" class="block hover:bg-gray-50 focus:bg-gray-50 transition duration-150 ease-in-out">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <h3 class="text-lg font-medium text-gray-900">Another Result Title</h3>
+                                            <p class="text-sm text-gray-600 mt-1">Source: Another Source</p>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <p class="text-sm text-gray-600 mr-2">Created At: <span class="font-medium">2023-06-25</span></p>
+                                            <div class="flex flex-wrap gap-1">
+                                                <!-- Replace with your actual tags -->
+                                                <span class="bg-gray-200 text-gray-800 text-xs px-2 rounded-full">Tag3</span>
+                                                <span class="bg-gray-200 text-gray-800 text-xs px-2 rounded-full">Tag4</span>
+                                                <!-- Add more tags as needed -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- Add more result items as needed -->
+                        </ul>
+                    </div>
+                </section>
+                <!-- this should not be rendered -->
+            {% endblock %}
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white text-center p-4 mt-6">
+        <div class="container mx-auto">
+            Powered by Toychest
+        </div>
+    </footer>
+
+</body>
+</html>

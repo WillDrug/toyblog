@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag List</title>
+    <link href="output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+     <div class="max-w-screen-md mx-auto bg-white p-4 shadow-md">
+        <div class="mb-4">
+            <select id="yearSelector" class="w-full p-2 border border-gray-300 rounded">
+                <!-- Years will be generated here by JavaScript -->
+            </select>
+        </div>
+        <div id="calendar" class="bg-white p-4 rounded shadow grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Calendar will be generated here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearSelector = document.getElementById('yearSelector');
+            const calendar = document.getElementById('calendar');
+
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const currentYear = new Date().getFullYear();
+            const yearRange = Array.from({length:currentYear-1999},(v,k)=>2000+k);
+
+            // Populate year selector
+            yearRange.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelector.appendChild(option);
+            });
+
+            // Set current year
+            yearSelector.value = currentYear;
+
+            // Function to generate calendar
+            function generateCalendar(year) {
+                calendar.innerHTML = '';
+                months.forEach((month, monthIndex) => {
+                    const monthDiv = document.createElement('div');
+                    monthDiv.classList.add('bg-gray-100', 'p-4', 'rounded', 'shadow');
+
+                    const monthTitle = document.createElement('h2');
+                    monthTitle.classList.add('text-lg', 'font-bold', 'text-center', 'mb-2');
+                    monthTitle.textContent = month;
+                    monthDiv.appendChild(monthTitle);
+
+                    let firstDay = new Date(year, monthIndex).getDay();
+                    firstDay = firstDay === 0 ? 6 : firstDay-1;
+                    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+                    const daysGrid = document.createElement('div');
+                    daysGrid.classList.add('grid', 'grid-cols-7', 'gap-1', 'text-center');
+
+                    // Add empty cells for days of the previous month
+                    for (let i = 0; i < firstDay; i++) {
+                        const emptyCell = document.createElement('div');
+                        daysGrid.appendChild(emptyCell);
+                    }
+
+                    // Add days of the current month
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const dayCell = document.createElement('div');
+                        dayCell.textContent = day;
+                        dayCell.classList.add('p-2', 'bg-gray-200', 'rounded');
+                        daysGrid.appendChild(dayCell);
+                    }
+
+                    monthDiv.appendChild(daysGrid);
+                    calendar.appendChild(monthDiv);
+                });
+            }
+
+            // Initial calendar generation
+            generateCalendar(yearSelector.value);
+
+            // Event listener for year selector
+            yearSelector.addEventListener('change', function() {
+                generateCalendar(yearSelector.value);
+            });
+        });
+    </script>
+</body>
+</html>
