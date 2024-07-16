@@ -13,6 +13,10 @@ COPY ./requirements.txt ./
 RUN pip install -r requirements.txt
 
 # Bundle app source
-COPY blog blog_web crawler toycommons main.py ./
+COPY blog ./
+COPY blog_web ./
+COPY crawler ./
+COPY toycommons ./
+COPY main.py ./
 
 CMD ["gunicorn", "-w",  "4", "-b", "0.0.0.0:80", "main:app"]
