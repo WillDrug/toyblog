@@ -17,6 +17,6 @@ COPY blog ./blog
 COPY blog_web ./blog_web
 COPY crawler ./crawler
 COPY toycommons ./toycommons
-COPY reporter.py ./main.py
+COPY reporter.py ./reporter.py
 
 CMD ["gunicorn", "-w",  "4", "-b", "0.0.0.0:80", "-c", "reporter.py", "blog_web:app"]
