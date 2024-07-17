@@ -50,7 +50,7 @@ def check_auth():
 @app.route('/auth/<token>', methods=['GET'])
 def auth(token):
     resp = make_response()
-    resp.set_cookie('auth', token)
+    resp.set_cookie('auth', token, domain='.willdrug.me')  # todo dynamic?
     return resp
 
 
