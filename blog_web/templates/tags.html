@@ -1,0 +1,12 @@
+{% extends "container.html" %}
+{% block main %}
+    <h1 class="text-3xl font-bold mb-6 text-center">Tags</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
+        {% for tag in tags %}
+            <a href="{{ url }}/tag/{{ tag[0] }}" class="w-full p-4 bg-white rounded shadow hover:bg-gray-100 transition duration-150 ease-in-out">
+                <span class="font-semibold">{{ tag[0] }}</span>
+                <span class="ml-2 text-gray-500">({{ tag[1] }})</span>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends "container.html" %}
+{% block main %}
+<section class="mb-6">
+    <!-- search test -->
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+
+        <!-- Search Box Section -->
+        <form method="post" action="{{ url }}">
+        <div class="flex flex-wrap items-center justify-between mb-1">
+            <div class="w-full md:w-2/5 flex items-center sm:m-2">
+                <input type="text" value="{{ original_search }}" id="search" name="search" class="w-auto w-full mt-1 block w-full border-gray-500 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            </div>
+            <div class="w-full md:w-1/5 flex items-center justify-end sm:m-2">
+                <select id="source" name="source" class="block w-full md:w-auto border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <option value="">All Sources</option>
+                    {% for src in sources %}
+                        <option value="{{ src }}">{{ src }}</option>
+                    {% endfor %}
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="w-full md:w-1/5 sm:m-2">
+                <input type="date" name="date_from" value="{{ date_from }}" class="mt-1 block w-full md:w-auto border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <input type="date" name="date_to" value="{{ date_to }}" class="mt-1 block w-full md:w-auto border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            </div>
+            <div class="w-full md:w-auto sm:m-2">
+                <button type="button" id="openModal" class="ml-2 bg-gray-200 px-3 py-1 text-sm text-gray-700 rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Tags</button>
+            </div>
+        </div>
+        <div class="flex justify-between items-center">
+            <p class="text-sm text-gray-600 mt-1" id="tags_container">{{ ', '.join(active_tags) }}</p>
+            <button type="submit" class="mt-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none focus:ring focus:ring-blue-200">Search</button>
+        </div>
+        <input id="tags_input" type="hidden" value="{{ ', '.join(active_tags) }}" name="tags"/>
+        </form>
+
+
+
+        <!-- Modal for Tags Selection -->
+        <div id="modal" class="fixed inset-0 z-50 hidden overflow-auto bg-gray-800 bg-opacity-50 flex justify-center items-center">
+            <div class="bg-white w-full mx-6 p-6 rounded-lg shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800">Select Tags</h2>
+                    <button type="button" id="closeModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    {% for tag in tags %}
+                        <button class="pill bg-gray-300 hover:bg-gray-400 rounded-full py-1 px-4 mr-2 mb-2 {{ "pill-selected" if tag in active_tags else "" }}">{{ tag }}</button>
+                    {% endfor %}
+                </div>
+                <style>
+                    .pill-selected {
+                        background-color: #6B7280; /* Change color for selected state */
+                        color: #F9FAFB; /* Text color for selected state */
+                    }
+                </style>
+                <script>
+                    // JavaScript to handle pill selection
+                    const pills = document.querySelectorAll('.pill');
+
+                    pills.forEach(pill => {
+                        pill.addEventListener('click', () => {
+                            pill.classList.toggle('pill-selected');
+                        });
+                    });
+                </script>
+                <div class="mt-4 flex justify-end">
+                    <button type="button" id="applyTags" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none focus:ring focus:ring-blue-200">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tailwind Modal Toggle Script -->
+    <script>
+        const openModal = document.getElementById('openModal');
+        const closeModal = document.getElementById('closeModal');
+        const modal = document.getElementById('modal');
+
+        openModal.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        document.getElementById('applyTags').addEventListener('click', () => {
+            modal.classList.add('hidden');
+            let tags = [];
+            document.querySelectorAll('.pill-selected').forEach((elem) => {tags.push(elem.innerHTML);});
+            document.getElementById('tags_container').innerHTML = tags.join(', ');
+            document.getElementById('tags_input').value = tags.join(', ');
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const itemsPerPage = {{ perpage }}; // Number of items per page
+            let currentPage = 1; // Initial page
+
+            const itemList = document.getElementById('item-list');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            const items = Array.from(itemList.children);
+
+            // Function to show items for the current page
+            function showItems(page) {
+                const startIndex = (page - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+
+                items.forEach((item, index) => {
+                    if (index >= startIndex && index < endIndex) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Update button states based on current page
+                if (currentPage === 1) {
+                    prevBtn.disabled = true;
+                    prevBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
+                } else {
+                    prevBtn.disabled = false;
+                    prevBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                }
+
+                const totalPages = Math.ceil(items.length / itemsPerPage);
+                if (currentPage === totalPages || totalPages === 0) {
+                    nextBtn.disabled = true;
+                    nextBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
+                } else {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                }
+
+            }
+
+            if (items.length <= itemsPerPage) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+                // Initial render
+                showItems(currentPage);
+
+                // Previous button click event
+                prevBtn.addEventListener('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showItems(currentPage);
+                    }
+                });
+
+                // Next button click event
+                nextBtn.addEventListener('click', function () {
+                    const totalPages = Math.ceil(items.length / itemsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        showItems(currentPage);
+                    }
+                });
+            }
+
+        });
+    </script>
+</section>
+<section>
+    <!-- Results Section -->
+    <div class="mt-6">
+        <ul id="item-list">
+            {% for page in results %}
+                <li class="border-b border-gray-200 py-4 element">
+                    <a href="{{ url }}/page/{{ page.page_id }}" class="block hover:bg-gray-50 focus:bg-gray-50 transition duration-150 ease-in-out">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">{{ page.title if page.title != '' else page.created_at }}</h3>
+                                <p class="text-sm text-gray-600 mt-1">Source: {{ page.page_type }}</p>
+                            </div>
+                            <div class="flex-column items-right">
+                                <p class="text-sm text-gray-600 mb-1 text-right" style="text-align: right;">Created At: <span class="font-medium">{{ page.created_at }}</span></p>
+                                <div class="flex flex-wrap gap-1" style="flex-direction: row-reverse;">
+                                    {% for tag in page.tags %}
+                                        <span class="bg-gray-200 text-gray-800 text-xs px-2 rounded-full">{{ tag }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="flex justify-center mt-4">
+        <button id="prev-btn" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-l">
+            Previous
+        </button>
+        <button id="next-btn" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-r">
+            Next
+        </button>
+    </div>
+    </div>
+</section>
+{% endblock %}
