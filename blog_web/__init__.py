@@ -38,9 +38,10 @@ def cleanup_render():
     :return:
     """
     path = Path(blog_config.data.get('render_path', 'render'))
-    tclr = [q for q in path.iterdir() if time() - q.stat().st_mtime > int(blog_config.get('render_timeout', 86400))]
-    for p in tclr:
-        p.unlink()
+    if path.exists():
+        tclr = [q for q in path.iterdir() if time() - q.stat().st_mtime > int(blog_config.get('render_timeout', 86400))]
+        for p in tclr:
+            p.unlink()
 
 
 @app.before_request
