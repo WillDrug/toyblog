@@ -24,7 +24,7 @@ tc = ToyInfra('toyblog', user=getenv('MONGO_USER'), passwd=getenv('MONGO_PASSWOR
 
 blog_config = tc.get_own_config()
 
-app.root_path = str(Path(app.root_path).parent)
+# app.root_path = str(Path(app.root_path).parent)
 
 app.static_folder = blog_config.data.get('render_path', 'render')
 app.template_folder = 'blog_web/templates'
