@@ -53,6 +53,7 @@ def auth(token):
     resp.set_cookie('auth', token)
     return resp
 
+
 @app.route('/', methods=['POST', 'GET'])
 def index(tag_spec=None, range_override=None):  # search and search results with POST
     # todo csrf
@@ -81,7 +82,7 @@ def index(tag_spec=None, range_override=None):  # search and search results with
     sources = blog.get_subfolders()
     return render_template('search.html', tags=sorted(blog.get_all_tags(visible=g.visible)), active_tags=active_tags, results=pages,
                            sources=sources, original_search=original_search or '', date_from=date_from, date_to=date_to,
-                           visible=g.visible, perpage=PERPAGE)
+                           visible=g.visible, perpage=PERPAGE, url=tc.get_self_url(origin=request.origin, headers=request.headers))
 
 
 @app.route('/tag/<tag>')
@@ -141,7 +142,8 @@ def render_page(page_id, suppress_share=False):
     else:
         show_share = g.visible
     return render_template('page.html', title=page.title, created_at=str(page.created_at),
-                           original_url=page.original_url, render=render, tags=page.tags, show_share=show_share)
+                           original_url=page.original_url, render=render, tags=page.tags, show_share=show_share,
+                           url=tc.get_self_url(origin=request.origin, headers=request.headers))
 
 
 @app.route('/page/<page_id>/<filename>')
@@ -158,7 +160,7 @@ def get_static(file):
 
 @app.route('/calendar')
 def calendar():
-    return render_template('calendar.html')
+    return render_template('calendar.html', url=tc.get_self_url(origin=request.origin, headers=request.headers))
 
 
 @app.route('/calendar/data')
@@ -171,4 +173,4 @@ def calendar_data():
 def all_tags():
     tags = blog.get_all_tags_with_count()
     tags = [(k, tags[k]) for k in sorted(tags.keys())]
-    return render_template('tags.html', tags=tags)
+    return render_template('tags.html', tags=tags, url=tc.get_self_url(origin=request.origin, headers=request.headers))

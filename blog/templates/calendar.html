@@ -34,7 +34,7 @@
         // Function to generate calendar
         // Function to fetch calendar data from /calendar/data endpoint
         async function fetchCalendarData() {
-            const response = await fetch('/calendar/data');
+            const response = await fetch('{{ url }}/calendar/data');
             calendarData = await response.json();
             generateCalendar(yearSelector.value);
         }
