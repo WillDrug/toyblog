@@ -25,9 +25,9 @@ def cleanup_render():
     pass
 
 
-app = Flask('blog')
+app = Flask('toyblog')
 
-tc = ToyInfra('blog', user=getenv('MONGO_USER'), passwd=getenv('MONGO_PASSWORD'))
+tc = ToyInfra('toyblog', user=getenv('MONGO_USER'), passwd=getenv('MONGO_PASSWORD'))
 
 
 blog_config = tc.get_own_config()
