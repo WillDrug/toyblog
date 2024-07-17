@@ -16,7 +16,7 @@
     <div class="absolute bottom-0 right-0 mb-4 mr-4">
         <p>Tags:
         {% for tag in tags %}
-            <a href="/tag/{{ tag }}" class="text-blue-500 hover:underline">{{ tag }}</a>
+            <a href="{{ url }}/tag/{{ tag }}" class="text-blue-500 hover:underline">{{ tag }}</a>
             {{ ", " if not loop.last else "" }}
           {% endfor %}
         </p>
