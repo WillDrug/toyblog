@@ -70,7 +70,7 @@
         <div class="max-w-7xl mx-auto px-4 flex justify-between">
             <!-- Blog Name -->
             <div class="max-w-7xl px-4">
-                <h1 class="text-4xl"><a href="/">WillDrug Web Log</a></h1>
+                <h1 class="text-4xl"><a href="{{ url }}">WillDrug Web Log</a></h1>
             </div>
 
             <!-- Dropdown Menu -->
@@ -82,8 +82,8 @@
                         </svg>
                     </button>
                     <div class="dropdown-content m-1 py-1">
-                        <a href="/calendar" class="block rounded-md">Calendar</a>
-                        <a href="/tags" class="block rounded-md">All Tags</a>
+                        <a href="{{ url }}/calendar" class="block rounded-md">Calendar</a>
+                        <a href="{{ url }}/tags" class="block rounded-md">All Tags</a>
                     </div>
                 </div>
             </div>
@@ -190,7 +190,7 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-white text-center p-4 mt-6">
         <div class="container mx-auto">
-            Powered by Toychest
+            Powered by <a href="/">Toychest</a>
         </div>
     </footer>
 
