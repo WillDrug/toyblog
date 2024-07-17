@@ -31,17 +31,19 @@ app.template_folder = 'blog_web/templates'
 app.config['passwords'] = {}
 blog = Blog(drive=tc.drive)
 
-
 def cleanup_render():
     """
     Clear the render folder via config attribute (check sys datetime created)
     :return:
     """
-    path = Path(blog_config.data.get('render_path', 'render'))
-    if path.exists():
-        tclr = [q for q in path.iterdir() if time() - q.stat().st_mtime > int(blog_config.get('render_timeout', 86400))]
-        for p in tclr:
-            p.unlink()
+    try:
+        path = Path(blog_config.data.get('render_path', 'render'))
+        if path.exists():
+            tclr = [q for q in path.iterdir() if time() - q.stat().st_mtime > int(blog_config.data.get('render_timeout', 86400))]
+            for p in tclr:
+                p.unlink()
+    except PermissionError:
+        pass
 
 
 @app.before_request
