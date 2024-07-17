@@ -121,8 +121,12 @@ def daterange(year, month=None, day=None):
 
 @app.route('/page/<page_id>:<token>')
 def access_page(page_id, token):
-    if token in app.config['passwords'].get(page_id, []):
-        g.visible = True
+    pwd = tc.cache['passwords']
+    if not isinstance(pwd, dict):
+        g.visible = False
+    else:
+        if token in pwd.get(page_id, []):
+            g.visible = True
 
     return render_page(page_id, suppress_share=True)
 
@@ -131,12 +135,16 @@ def access_page(page_id, token):
 def render_page(page_id, suppress_share=False):
     if request.method == 'POST' and g.visible:
         pwd = request.form.get('password')
-        if page_id not in app.config['passwords']:
-            app.config['passwords'][page_id] = []
-        if pwd in app.config['passwords'][page_id]:
-            app.config['passwords'][page_id].remove(pwd)
+        cached = tc.cache['passwords']
+        if not isinstance(cached, dict):
+            cached = {}
+        if page_id not in cached:
+            cached[page_id] = []
+        if pwd in cached[page_id]:
+            cached[page_id].remove(pwd)
         else:
-            app.config['passwords'][page_id].append(pwd)
+            cached[page_id].append(pwd)
+        tc.cache['passwords'] = cached
 
     page = blog.get_page_by_id(page_id)
     if not page.visible and not g.visible:
