@@ -14,33 +14,38 @@ from blog import Blog
 from blog.render import TailwindRender
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from time import time
 
 PERPAGE = 10
+
+app = Flask('toyblog')
+
+tc = ToyInfra('toyblog', user=getenv('MONGO_USER'), passwd=getenv('MONGO_PASSWORD'))
+
+blog_config = tc.get_own_config()
+
+app.root_path = str(Path(app.root_path).parent)
+
+app.static_folder = blog_config.data.get('render_path', 'render')
+app.template_folder = 'blog_web/templates'
+app.config['passwords'] = {}
+blog = Blog(drive=tc.drive)
+
 
 def cleanup_render():
     """
     Clear the render folder via config attribute (check sys datetime created)
     :return:
     """
-    pass
+    path = Path(blog_config.data.get('render_path', 'render'))
+    tclr = [q for q in path.iterdir() if time() - q.stat().st_mtime > int(blog_config.get('render_timeout', 86400))]
+    for p in tclr:
+        p.unlink()
 
-
-app = Flask('toyblog')
-
-tc = ToyInfra('toyblog', user=getenv('MONGO_USER'), passwd=getenv('MONGO_PASSWORD'))
-
-
-blog_config = tc.get_own_config()
-
-app.root_path = str(Path(app.root_path).parent)
-app.static_folder = blog_config.data.get('render_path', 'render')
-app.template_folder = 'blog_web/templates'
-app.config['passwords'] = {}
-
-blog = Blog(drive=tc.drive)
 
 @app.before_request
 def check_auth():
+    cleanup_render()
     g.visible = False
     if (token := request.cookies.get('auth')) is not None:
         if token == blog_config.data.get('master_token'):
@@ -69,7 +74,8 @@ def index(tag_spec=None, range_override=None):  # search and search results with
         if range_override is not None:
             date_from = range_override[0]
             date_to = range_override[1]
-        pages = blog.search_pages(tags=active_tags, title=title, date_from=date_from, date_to=date_to, visible=g.visible)
+        pages = blog.search_pages(tags=active_tags, title=title, date_from=date_from, date_to=date_to,
+                                  visible=g.visible)
         pages = pages[:200]  # hard limit here
     else:
         pages = blog.get_latest(PERPAGE, visible=g.visible)
@@ -80,9 +86,11 @@ def index(tag_spec=None, range_override=None):  # search and search results with
     if active_tags is None:
         active_tags = []
     sources = blog.get_subfolders()
-    return render_template('search.html', tags=sorted(blog.get_all_tags(visible=g.visible)), active_tags=active_tags, results=pages,
+    return render_template('search.html', tags=sorted(blog.get_all_tags(visible=g.visible)), active_tags=active_tags,
+                           results=pages,
                            sources=sources, original_search=original_search or '', date_from=date_from, date_to=date_to,
-                           visible=g.visible, perpage=PERPAGE, url=tc.get_self_url(origin=request.origin, headers=request.headers))
+                           visible=g.visible, perpage=PERPAGE,
+                           url=tc.get_self_url(origin=request.origin, headers=request.headers))
 
 
 @app.route('/tag/<tag>')
@@ -107,12 +115,14 @@ def daterange(year, month=None, day=None):
         date_to = date_from + relativedelta(years=1) - relativedelta(days=1)
     return index(range_override=(date_from, date_to))
 
+
 @app.route('/page/<page_id>:<token>')
 def access_page(page_id, token):
     if token in app.config['passwords'].get(page_id, []):
         g.visible = True
 
     return render_page(page_id, suppress_share=True)
+
 
 @app.route('/page/<page_id>', methods=['POST', 'GET'])
 def render_page(page_id, suppress_share=False):
