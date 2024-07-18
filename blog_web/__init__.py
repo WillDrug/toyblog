@@ -133,6 +133,7 @@ def access_page(page_id, token):
 
 @app.route('/page/<page_id>', methods=['POST', 'GET'])
 def render_page(page_id, suppress_share=False):
+    # todo fix unexpected EOF within toycommons (google suggests switching to another requests lib)
     if request.method == 'POST' and g.visible:
         pwd = request.form.get('password')
         cached = tc.cache['passwords']
