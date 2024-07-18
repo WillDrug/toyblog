@@ -73,7 +73,7 @@
 
                     if (calendarData[ref] != undefined) {
                         const link = document.createElement('a');
-                        link.href = '{{ url }}/date/' + year + '/' + monthIndex+1 + '/' + day;
+                        link.href = '{{ url }}/date/' + year + '/' + (monthIndex+1) + '/' + day;
                         link.textContent = day + ' (' + calendarData[ref] + ')'
                         dayCell.appendChild(link);
                         dayCell.classList.add('bg-gray-400')
