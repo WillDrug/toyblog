@@ -1,0 +1,21 @@
+version: '3'
+services:
+  toydb:
+    image: mongo
+    restart: unless-stopped
+    container_name: toyblog
+    hostname: toyblog
+    networks:
+      - toysupport
+      - toynet
+    environment:
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+
+networks:
+  toysupport:
+    name: toysupport
+    external: true
+  toynet:
+    name: toynet
+    external: true
