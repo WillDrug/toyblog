@@ -47,7 +47,7 @@
                 const monthTitle = document.createElement('h2');
                 monthTitle.classList.add('text-lg', 'font-bold', 'text-center', 'mb-2');
                 const link = document.createElement('a');
-                link.href = '/date/' + year + '/' + monthIndex+1;
+                link.href = '{{ url }}/date/' + year + '/' + (monthIndex+1);
                 link.textContent = month;
                 monthTitle.appendChild(link);
                 // monthTitle.textContent = month;
@@ -68,9 +68,7 @@
 
                 // Add days of the current month
                 for (let day = 1; day <= daysInMonth; day++) {
-                    console.log(day, monthIndex, year);
                     let ref = year+'-'+String(monthIndex+1).padStart(2, '0')+'-'+String(day).padStart(2, '0')
-                    console.log(calendarData);
                     const dayCell = document.createElement('div');
 
                     if (calendarData[ref] != undefined) {
