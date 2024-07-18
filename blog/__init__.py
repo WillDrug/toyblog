@@ -61,7 +61,7 @@ class Blog:  # this should hold pages, index and do search
         if self.__drive is not None:
             # add all possible subfolders within main blog
             for folder in self.get_subfolders():
-                self.__drive.add_directory(folder, parent=self.domain, )
+                self.__drive.add_directory(folder, parent=self.domain, sync_config_field=None, sync_now=True)
         # meta has Page objects.
         # meta file is loaded upon init once and updated via request (sync can be handled by web, re-load here)
         # page files are loaded on-demand
