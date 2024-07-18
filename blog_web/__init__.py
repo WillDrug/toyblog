@@ -102,8 +102,8 @@ def tag(tag):
 
 
 @app.route('/date/<year>/')
-@app.route('/date/<year>/<month>/')
-@app.route('/date/<year>/<month>/<day>/')
+@app.route('/date/<year>/<month>')
+@app.route('/date/<year>/<month>/<day>')
 def daterange(year, month=None, day=None):
     year = int(year)
     if month is not None:
