@@ -41,7 +41,8 @@ def cleanup_render():
         if path.exists():
             tclr = [q for q in path.iterdir() if time() - q.stat().st_mtime > int(blog_config.data.get('render_timeout', 86400))]
             for p in tclr:
-                p.unlink()
+                [q.unlink() for q in p.iterdir()]
+                p.rmdir()
     except PermissionError:
         pass
 
